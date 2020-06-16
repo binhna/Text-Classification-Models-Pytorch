@@ -47,8 +47,19 @@ class Dataset(object):
         #     data_label = list(map(lambda x: self.parse_label(x[0]), data))
 
         # full_df = pd.DataFrame({"text":data_text, "label":data_label})
-        full_df = pd.read_csv(filename, index_col=False)
-        return full_df
+        labels = {'ニューストップ-海外-韓国': 1,
+                  'ニューストップ-芸能-音楽': 2,
+                  'ニューストップ-芸能-TV': 3,
+                  'ニューストップ--ライフスタイル': 4,
+                  'ニューストップ-IT 経済': 5,
+                  'ニューストップ--カルチャー': 6,
+                  'ニューストップ-芸能-映画総合': 7,
+                  'ニューストップ-スポーツ': 8,
+                  'ニューストップ-国内-社会': 9,
+                  'ニューストップ-芸能-アニメ': 10}
+        df = pd.read_csv(filename, index_col=False)
+        df['label'] = df['label'].apply(lambda x: labels[x])
+        return df
     
     def load_data(self, w2v_file, train_file, test_file, val_file=None):
         '''
@@ -67,9 +78,9 @@ class Dataset(object):
         # tokenizer = lambda sent: [x.text for x in NLP.tokenizer(sent) if x.text != " "]
         
         # Creating Field for data
-        TEXT = data.Field(sequential=True, tokenize=tokenizer, lower=True, fix_length=self.config.max_sen_len)
-        LABEL = data.Field(sequential=False, use_vocab=False)
-        datafields = [("text",TEXT),("label",LABEL)]
+        TEXT = data.Field(sequential=True, tokenize=tokenizer, lower=True)#, fix_length=self.config.max_sen_len)
+        LABEL = data.LabelField(dtype=np.float32)
+        datafields = [("text",TEXT), ("label",LABEL)]
         
         # Load data from pd.DataFrame into torchtext.data.Dataset
         train_df = self.get_pandas_df(train_file)
