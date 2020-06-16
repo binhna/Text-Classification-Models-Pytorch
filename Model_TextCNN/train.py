@@ -17,7 +17,7 @@ if __name__=='__main__':
     if len(sys.argv) > 3:
         test_file = sys.argv[2]
     
-    w2v_file = '../data/glove.840B.300d.txt'
+    w2v_file = '/home/aimenext/binhna/FastText/'
     
     dataset = Dataset(config)
     dataset.load_data(w2v_file, train_file, test_file)
@@ -29,7 +29,8 @@ if __name__=='__main__':
         model.cuda()
     model.train()
     optimizer = optim.SGD(model.parameters(), lr=config.lr)
-    NLLLoss = nn.NLLLoss()
+    # NLLLoss = nn.NLLLoss()
+    NLLLoss = nn.CrossEntropyLoss()
     model.add_optimizer(optimizer)
     model.add_loss_op(NLLLoss)
     ##############################################################

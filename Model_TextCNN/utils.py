@@ -7,6 +7,15 @@ import spacy
 import pandas as pd
 import numpy as np
 from sklearn.metrics import accuracy_score
+import MeCab
+mecab_tokenizer = MeCab.Tagger(
+    f"-Ochasen -d /home/aimenext/nlp_data/neologd_dic")
+
+
+def tokenizer(sentence):
+    sentence = mecab_tokenizer.parse(sentence)
+    words = [i.split('\t')[0] for i in sentence.split('\n')[:-2]]
+    return words
 
 class Dataset(object):
     def __init__(self, config):
@@ -32,12 +41,13 @@ class Dataset(object):
         Load the data into Pandas.DataFrame object
         This will be used to convert data to torchtext object
         '''
-        with open(filename, 'r') as datafile:     
-            data = [line.strip().split(',', maxsplit=1) for line in datafile]
-            data_text = list(map(lambda x: x[1], data))
-            data_label = list(map(lambda x: self.parse_label(x[0]), data))
+        # with open(filename, 'r') as datafile:     
+        #     data = [line.strip().split(',', maxsplit=1) for line in datafile]
+        #     data_text = list(map(lambda x: x[1], data))
+        #     data_label = list(map(lambda x: self.parse_label(x[0]), data))
 
-        full_df = pd.DataFrame({"text":data_text, "label":data_label})
+        # full_df = pd.DataFrame({"text":data_text, "label":data_label})
+        full_df = pd.read_csv(filename, index_col=False)
         return full_df
     
     def load_data(self, w2v_file, train_file, test_file, val_file=None):
@@ -53,8 +63,8 @@ class Dataset(object):
             val_file (String): absolute path to validation file
         '''
 
-        NLP = spacy.load('en')
-        tokenizer = lambda sent: [x.text for x in NLP.tokenizer(sent) if x.text != " "]
+        # NLP = spacy.load('en')
+        # tokenizer = lambda sent: [x.text for x in NLP.tokenizer(sent) if x.text != " "]
         
         # Creating Field for data
         TEXT = data.Field(sequential=True, tokenize=tokenizer, lower=True, fix_length=self.config.max_sen_len)
