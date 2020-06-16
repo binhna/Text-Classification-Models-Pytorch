@@ -1,1 +1,3 @@
+*.pyc
 .DS_Store
+.vector_cache

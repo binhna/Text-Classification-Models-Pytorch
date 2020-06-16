@@ -10,17 +10,18 @@ import torch
 
 if __name__=='__main__':
     config = Config()
-    train_file = '../data/ag_news.train'
+    train_file = '/home/aimenext/binhna/text_classification/data/news_classification_train.csv'
     if len(sys.argv) > 2:
         train_file = sys.argv[1]
-    test_file = '../data/ag_news.test'
+    test_file = '/home/aimenext/binhna/text_classification/data/news_classification_test.csv'
     if len(sys.argv) > 3:
         test_file = sys.argv[2]
+    dev_file = '/home/aimenext/binhna/text_classification/data/news_classification_dev.csv'
     
-    w2v_file = '/home/aimenext/binhna/FastText/'
+    w2v_file = '/home/aimenext/binhna/fastText/cc.ja.300.vec'
     
     dataset = Dataset(config)
-    dataset.load_data(w2v_file, train_file, test_file)
+    dataset.load_data(w2v_file, train_file, test_file, dev_file)
     
     # Create Model with specified optimizer and loss function
     ##############################################################
